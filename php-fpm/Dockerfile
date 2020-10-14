@@ -33,6 +33,21 @@ RUN if [ ${CHANGE_SOURCE} = true ]; then \
     sed -i 's/security-cdn.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list \
 ;fi
 
+#
+#--------------------------------------------------------------------------
+# Proxy Settings - Solution based upon : https://stackoverflow.com/questions/11165400/pecl-installing-extension-on-production-server-troubles/11195778#11195778?newreg=19c4e859f55842e6b6edc7e2d45e9918)
+#--------------------------------------------------------------------------
+# 
+# 1 - Review and uncomment next line. (Sadly, we've found no technical way to achieve this from outside the dockerfile. Please review if you find one)
+# RUN pear config-set http_proxy http://USERNAME:PASSWORD@proxy.example.com:80
+#
+# 2 - Setup docker to use your proxy 
+#     To persist your proxy settings, follow : https://docs.docker.com/config/daemon/systemd/ then build as usual : docker-compose build php-fpm
+#     or build with proxy env args : "docker-compose build --no-cache --build-arg http_proxy=http://USERNAME:PASSWORD@proxy.example.com:80 --build-arg https_proxy=http://USERNAME:PASSWORD@proxy.example.com:443 php-fpm"
+#
+# NOTE: If the proxy is not secured with a user/pass, change above proxy URL to http://proxy.example.com:80
+#
+
 # always run apt update when start and after add new source list, then clean up at end.
 RUN set -xe; \
     apt-get update -yqq && \
